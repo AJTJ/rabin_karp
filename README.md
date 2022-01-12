@@ -49,4 +49,5 @@ hash = p[0] + 10(p[1] + 10(p[2] + ... + 10(p[n - 1] + 10 * p[n]))
 ```
 
 ### General notes
+- Grapheme support required by ext crate
 - Hash collision resulting in mis-match: "spurious hit"
