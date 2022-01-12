@@ -10,13 +10,12 @@ https://www.jrgould.com/posts/rabin-karp-rolling-hash-string-search-algorithm
 article includes horner's method
 https://medium.com/swlh/rabin-karp-algorithm-using-polynomial-hashing-and-modular-arithmetic-437627b37db6
 
-- the naive algo would use the sliding window and check every character every time.
-- rabin karp would generate the hash, and if the hash matches only then will it check the individual characters
+More on Horner's method
+https://en.wikipedia.org/wiki/Horner%27s_method
 
-### potential hash functions to use
-- Rabin-fingerprint is ideal
-  - This example uses a simplified version
-- This example uses Horner's Method
+## TODO
+- Perhaps upgrade the hash function used
+  - Look into the original Rabin-Karp fingerprint
 
 ### requirements
 - the hash much be efficiently computable from the current hash value and the next character in the text
@@ -25,16 +24,6 @@ https://medium.com/swlh/rabin-karp-algorithm-using-polynomial-hashing-and-modula
 must be computable from 
 `hash(txt[s .. s+m-1])`
 - rehash must be a 0(1) operation
-
-### one formula
-
-`hash( txt[s+1 .. s+m] ) = (d(hash( txt[s .. s+m-1]) – txt[s]*h ) + txt[s + m]) mod q`
-where
-hash( txt[s .. s+m-1] ) : Hash value at shift s. 
-hash( txt[s+1 .. s+m] ) : Hash value at next shift (or shift s+1) 
-d: Number of characters in the alphabet 
-q: A prime number 
-
 
 ### formula
 ```
@@ -51,6 +40,11 @@ n = possible length of the pattern
 l = the length of the pattern - 1
 v = some value to modulo against to avoid overflow
 
+Updated using Horner's method: minimizes multiplications and thus potential overflow
+
+```
+hash = p[0] + 10(p[1] + 10(p[2] + ... + 10(p[n - 1] + 10 * p[n]))
+```
 
 ### General notes
-- A hash collision is known as a "spurious hit"
+- Hash collision resulting in mis-match: "spurious hit"
