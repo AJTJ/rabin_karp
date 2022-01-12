@@ -34,13 +34,15 @@ hash = ((p[0] * 10^l) + (p[1] * 10^l- 1).. (p[n] * 10^0)) % v
 hash[s + 1.. s + m] = 
 hash[s.. s + m - 1] - (s * 10^p) + m] 
 ```
-where
+#### key
+```
 p = the pattern
 n = possible length of the pattern
 l = the length of the pattern - 1
 v = some value to modulo against to avoid overflow
+```
 
-Updated using Horner's method: minimizes multiplications and thus potential overflow
+#### Updated using Horner's method: minimizes multiplications and thus potential overflow
 
 ```
 hash = p[0] + 10(p[1] + 10(p[2] + ... + 10(p[n - 1] + 10 * p[n]))
