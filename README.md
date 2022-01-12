@@ -7,9 +7,16 @@ https://www.youtube.com/watch?v=qQ8vS2btsxI
 interesting article, doesn't use modular arithmatic though
 https://www.jrgould.com/posts/rabin-karp-rolling-hash-string-search-algorithm
 
+article includes horner's method
+https://medium.com/swlh/rabin-karp-algorithm-using-polynomial-hashing-and-modular-arithmetic-437627b37db6
 
 - the naive algo would use the sliding window and check every character every time.
 - rabin karp would generate the hash, and if the hash matches only then will it check the individual characters
+
+### potential hash functions to use
+- Rabin-fingerprint is ideal
+  - This example uses a simplified version
+- This example uses Horner's Method
 
 ### requirements
 - the hash much be efficiently computable from the current hash value and the next character in the text
