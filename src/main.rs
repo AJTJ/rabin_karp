@@ -6,36 +6,38 @@ fn main() {
         fn gen_hash(pattern: &[&str], prime: u32) -> u32 {
             let mut hash = 0;
             for c in pattern.iter() {
-                hash = (hash * 10 + c.chars().next().unwrap() as u32) % prime;
+                let char_val = c.chars().next().unwrap() as u32;
+                hash = ((hash * 10) + char_val) % prime;
             }
             hash
         }
 
         fn roll_hash(
-            first_char: &str,
+            first_str: &str,
             pattern_len: usize,
             prev_hash_passed: u32,
-            next_char: &str,
+            next_str: &str,
             prime: u32,
         ) -> u32 {
-            println!("prev hash: {}", prev_hash_passed);
-            // add the modulus to ensure non-negative numbers
             let prev_hash = prev_hash_passed + prime;
-            let hash_char_removed = prev_hash
-                - (((first_char.chars().next().unwrap() as u32)
-                    * (10_u32.checked_pow((pattern_len) as u32)).unwrap())
-                    % prime);
-            println!("hash with char removed + prime: {}", hash_char_removed);
-            let new_hash =
-                ((hash_char_removed * 10) + (next_char.chars().next().unwrap() as u32)) % prime;
-            println!("new hash: {}", new_hash);
-            new_hash
+
+            let mut multiplier = 1;
+            let mut i = 1;
+            while i < pattern_len {
+                multiplier *= 10;
+                multiplier %= prime;
+                i += 1;
+            }
+
+            let first_char = first_str.chars().next().unwrap() as u32;
+            let next_char = next_str.chars().next().unwrap() as u32;
+
+            let hash_char_removed = (prev_hash - ((multiplier * first_char) % prime)) * 10;
+            (hash_char_removed + next_char) % prime
         }
 
         // a prime to reduce the size of the values
         let prime = 461;
-
-        // the hash of the pattern to find
 
         let pattern_as_graphemes =
             UnicodeSegmentation::graphemes(pattern_as_str, true).collect::<Vec<&str>>();
@@ -43,33 +45,34 @@ fn main() {
 
         // the indices of the pattern
         let mut start = 0;
-        let mut end = pattern_as_graphemes.len();
+        let mut end = pattern_as_graphemes.len() - 1;
 
         // the previous hash
-        let prev_hash: Option<u32> = None;
+        let mut prev_hash: Option<u32> = None;
 
         let mut matches_found: Vec<u32> = vec![];
 
         let text_as_graphemes =
             UnicodeSegmentation::graphemes(text_as_str, true).collect::<Vec<&str>>();
 
-        while end <= text_as_graphemes.len() {
-            let sub_string_as_graphemes = &text_as_graphemes[start..end];
+        while end <= (text_as_graphemes.len() - 1) {
+            let sub_string_as_graphemes = &text_as_graphemes[start..end + 1];
             let sub_string_hash: u32;
-            if let Some(prev) = prev_hash {
+            if let Some(previous_hash) = prev_hash {
                 let grapheme_being_dropped = text_as_graphemes[(start - 1)..start][0];
-                let added_grapheme = text_as_graphemes[end..(end + 1)][0];
+                let added_grapheme = text_as_graphemes[(end)..][0];
                 sub_string_hash = roll_hash(
                     grapheme_being_dropped,
                     pattern_as_graphemes.len(),
-                    prev,
+                    previous_hash,
                     added_grapheme,
                     prime,
-                )
+                );
+                prev_hash = Some(sub_string_hash);
             } else {
-                sub_string_hash = gen_hash(&text_as_graphemes[start..end], prime);
+                sub_string_hash = gen_hash(&text_as_graphemes[start..end + 1], prime);
+                prev_hash = Some(sub_string_hash);
             }
-
             if sub_string_hash == pattern_hash && pattern_as_graphemes == sub_string_as_graphemes {
                 matches_found.push(start as u32);
             }
@@ -79,10 +82,10 @@ fn main() {
         matches_found
     }
 
-    let matches = find_matches("ddd", "aaadddda̐éö̲bbddddd");
+    let matches = find_matches("ddd", "dddddddda̐éö̲bbddddd");
     println!("the matches: {:?}", matches)
 }
-
+//
 // USING POLYNOMIAL
 // fn gen_hash(pattern: &str, prime: u32) -> u32 {
 //     let mut hash = 0;
