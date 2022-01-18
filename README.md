@@ -1,3 +1,5 @@
+# THIS IS NOT UP-TO-DATE, PLEASE SEE https://github.com/AJTJ/rabin_karp_wasm
+
 rabin karp theory:
 https://www.geeksforgeeks.org/rabin-karp-algorithm-for-pattern-searching
 
